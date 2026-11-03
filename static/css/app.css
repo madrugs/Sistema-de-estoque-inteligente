@@ -1,0 +1,391 @@
+/* Estilos do sistema. Cores em tokens para facilitar ajustes de contraste. */
+:root {
+  --cor-fundo: #f5f7f4;
+  --cor-superficie: #ffffff;
+  --cor-texto: #1d2521;
+  --cor-texto-suave: #4a5550;
+  --cor-primaria: #1f5f3b;
+  --cor-primaria-hover: #174a2e;
+  --cor-borda: #c9d2cc;
+  --cor-foco: #0b57d0;
+  --cor-alerta-fundo: #fdecea;
+  --cor-alerta-texto: #8a1c12;
+  --cor-ok-fundo: #e6f4ea;
+  --cor-ok-texto: #1e6b34;
+  --cor-aviso-fundo: #fff4d6;
+  --cor-aviso-texto: #6b4a00;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+/* Foco sempre visível, para navegação por teclado (WCAG). */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.pular-conteudo {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  padding: 0.5rem 1rem;
+  background: var(--cor-superficie);
+  color: var(--cor-texto);
+  z-index: 10;
+}
+
+.pular-conteudo:focus {
+  top: 0.5rem;
+}
+
+.cabecalho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.cabecalho .marca {
+  margin: 0;
+  font-weight: 700;
+}
+
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu a,
+.cabecalho a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.menu a:hover {
+  background: var(--cor-primaria-hover);
+}
+
+.menu a[aria-current="page"] {
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+button,
+.botao {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+input,
+select {
+  font: inherit;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--cor-borda);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--cor-texto);
+  width: 100%;
+  max-width: 480px;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  max-width: none;
+  margin-right: 0.5rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.campo {
+  margin-bottom: 1rem;
+}
+
+.campo-linha {
+  display: flex;
+  align-items: center;
+}
+
+.campo-linha label {
+  display: inline;
+  margin: 0;
+  font-weight: 400;
+}
+
+.ajuda,
+.help {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+}
+
+.formulario {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  padding: 1.25rem;
+  max-width: 640px;
+}
+
+.filtros,
+.resumo {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.resumo dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+}
+
+.resumo dt {
+  color: var(--cor-texto-suave);
+}
+
+.resumo dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.alerta,
+.alerta-estoque {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin: 0 0 1rem;
+}
+
+.alerta,
+.alerta-estoque.alerta-critico {
+  background: var(--cor-alerta-fundo);
+  color: var(--cor-alerta-texto);
+}
+
+.alerta-estoque {
+  background: var(--cor-ok-fundo);
+  color: var(--cor-ok-texto);
+}
+
+.feedback {
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  min-height: 1.5rem;
+}
+
+.feedback-ok {
+  background: var(--cor-ok-fundo);
+  color: var(--cor-ok-texto);
+}
+
+.feedback-erro {
+  background: var(--cor-alerta-fundo);
+  color: var(--cor-alerta-texto);
+}
+
+.tabela-wrapper {
+  overflow-x: auto;
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+caption {
+  text-align: left;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  border-top: 1px solid var(--cor-borda);
+  vertical-align: top;
+}
+
+thead th {
+  background: #eef3ef;
+  font-size: 0.9rem;
+}
+
+tr[hidden] {
+  display: none;
+}
+
+.numero {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.selo {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.selo-critico {
+  background: var(--cor-alerta-fundo);
+  color: var(--cor-alerta-texto);
+}
+
+.selo-ok {
+  background: var(--cor-ok-fundo);
+  color: var(--cor-ok-texto);
+}
+
+.form-sair button {
+  background: transparent;
+  border: 1px solid #ffffff;
+}
+
+.form-sair button:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+}
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
+.indicador {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-left: 5px solid var(--cor-primaria);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.indicador-critico {
+  border-left-color: var(--cor-alerta-texto);
+}
+
+.indicador-rotulo {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
+
+.indicador-valor {
+  font-size: 1.5rem;
+}
+
+.graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.grafico {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 0;
+}
+
+.grafico h3 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem;
+}
+
+.graficos #aviso-graficos {
+  grid-column: 1 / -1;
+}
+
+/* Telas pequenas: margens laterais de 16px e nada de rolagem horizontal da página. */
+@media (max-width: 600px) {
+  main {
+    padding: 1rem 16px 2rem;
+  }
+
+  input,
+  select {
+    max-width: 100%;
+  }
+
+  .cabecalho {
+    padding: 0.75rem 16px;
+  }
+}
