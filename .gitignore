@@ -1,0 +1,22 @@
+# Ambiente virtual e cache do Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Variáveis de ambiente locais (segredos nunca devem ir ao repositório)
+.env
+
+# Banco de dados local (SQLite)
+db.sqlite3
+
+# Arquivos estáticos coletados para produção
+staticfiles/
+
+# Relatório pessoal (documento do curso, não é código do projeto)
+Modelo_Relatorio_Final.docx
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
