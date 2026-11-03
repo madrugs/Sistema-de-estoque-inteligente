@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Painel{% endblock %}
+
+{% block cabecalho_extra %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+{% endblock %}
+
+{% block conteudo %}
+  <h1>Painel</h1>
+
+  <section aria-labelledby="titulo-indicadores">
+    <h2 id="titulo-indicadores">Indicadores</h2>
+    <ul class="indicadores">
+      <li class="indicador">
+        <span class="indicador-rotulo">Capital imobilizado</span>
+        <strong class="indicador-valor">R$ {{ indicadores.capital_imobilizado|floatformat:2 }}</strong>
+      </li>
+      <li class="indicador">
+        <span class="indicador-rotulo">Itens cadastrados</span>
+        <strong class="indicador-valor">{{ indicadores.total_produtos }}</strong>
+      </li>
+      <li class="indicador">
+        <span class="indicador-rotulo">Unidades em estoque</span>
+        <strong class="indicador-valor">{{ indicadores.total_unidades }}</strong>
+      </li>
+      <li class="indicador {% if indicadores.produtos_criticos %}indicador-critico{% endif %}">
+        <span class="indicador-rotulo">Abaixo do estoque mínimo</span>
+        <strong class="indicador-valor">{{ indicadores.produtos_criticos }}</strong>
+      </li>
+      <li class="indicador">
+        <span class="indicador-rotulo">Preço médio de venda</span>
+        <strong class="indicador-valor">R$ {{ indicadores.preco_medio_venda|floatformat:2 }}</strong>
+      </li>
+    </ul>
+  </section>
+
+  <section class="graficos" aria-labelledby="titulo-graficos">
+    <h2 id="titulo-graficos">Gráficos</h2>
+    <div class="grafico">
+      <h3>Volume em estoque por categoria</h3>
+      <canvas id="grafico-categorias" role="img" aria-label="Gráfico de barras com o volume em estoque por categoria"></canvas>
+    </div>
+    <div class="grafico">
+      <h3>Movimentações por tipo</h3>
+      <canvas id="grafico-movimentos" role="img" aria-label="Gráfico de rosca com a quantidade de entradas e saídas"></canvas>
+    </div>
+    <p id="aviso-graficos" class="ajuda" aria-live="polite"></p>
+  </section>
+
+  <section aria-labelledby="titulo-recentes">
+    <h2 id="titulo-recentes">Últimas movimentações</h2>
+    <div class="tabela-wrapper" tabindex="0" role="region" aria-labelledby="titulo-recentes">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Data e hora</th>
+            <th scope="col">Produto</th>
+            <th scope="col">Tipo</th>
+            <th scope="col" class="numero">Quantidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mov in ultimas_movimentacoes %}
+            <tr>
+              <td>{{ mov.criado_em|date:"d/m/Y H:i" }}</td>
+              <th scope="row">{{ mov.produto.nome }}</th>
+              <td>{{ mov.get_tipo_display }}</td>
+              <td class="numero">{{ mov.quantidade }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="4">Nenhuma movimentação registrada ainda.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {{ grafico_categorias|json_script:"dados-categorias" }}
+  {{ grafico_movimentos|json_script:"dados-movimentos" }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/painel.js' %}" defer></script>
+{% endblock %}

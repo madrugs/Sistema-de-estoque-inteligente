@@ -276,6 +276,31 @@ class CepApiTests(ApiTestCase):
         self.assertEqual(resposta.status_code, 503)
 
 
+class PainelTests(ApiTestCase):
+    def test_painel_responde_200_e_mostra_indicadores(self):
+        self.produto.quantidade = 2  # abaixo do mínimo (4)
+        self.produto.save()
+        resposta = self.client.get(reverse("dashboard"))
+        self.assertEqual(resposta.status_code, 200)
+        self.assertEqual(resposta.context["indicadores"]["total_produtos"], 1)
+        self.assertEqual(resposta.context["indicadores"]["produtos_criticos"], 1)
+        self.assertEqual(resposta.context["indicadores"]["total_unidades"], 2)
+        # custo do produto de teste é 20,00: capital = 2 x 20,00
+        self.assertEqual(resposta.context["indicadores"]["capital_imobilizado"], Decimal("40.00"))
+
+    def test_painel_envia_dados_dos_graficos(self):
+        resposta = self.client.get(reverse("dashboard"))
+        self.assertContains(resposta, 'id="dados-categorias"')
+        self.assertContains(resposta, "Bebidas")
+        labels = resposta.context["grafico_categorias"]["labels"]
+        self.assertIn("Bebidas", labels)
+        self.assertEqual(len(labels), len(resposta.context["grafico_categorias"]["valores"]))
+
+    def test_painel_exige_login(self):
+        self.client.logout()
+        self.assertEqual(self.client.get(reverse("dashboard")).status_code, 302)
+
+
 class PaginasWebTests(ApiTestCase):
     def test_paginas_exigem_login(self):
         self.client.logout()
@@ -289,10 +314,6 @@ class PaginasWebTests(ApiTestCase):
         for nome in ["estoque-lista", "movimentar", "historico"]:
             with self.subTest(pagina=nome):
                 self.assertEqual(self.client.get(reverse(nome)).status_code, 200)
-
-    def test_painel_redireciona_para_estoque(self):
-        resposta = self.client.get(reverse("dashboard"))
-        self.assertRedirects(resposta, reverse("estoque-lista"), fetch_redirect_response=False)
 
     def test_estoque_mostra_alerta_com_aria_live(self):
         self.produto.quantidade = 1

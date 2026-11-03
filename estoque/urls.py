@@ -1,6 +1,4 @@
-from django.contrib.auth.decorators import login_required
 from django.urls import include, path
-from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
 
 from . import api, views
@@ -12,7 +10,7 @@ router.register("fornecedores", api.FornecedorViewSet, basename="fornecedor")
 
 urlpatterns = [
     # Páginas
-    path("", login_required(RedirectView.as_view(pattern_name="estoque-lista")), name="dashboard"),
+    path("", views.painel, name="dashboard"),
     path("estoque/", views.estoque_lista, name="estoque-lista"),
     path("movimentar/", views.movimentar, name="movimentar"),
     path("historico/", views.historico, name="historico"),
