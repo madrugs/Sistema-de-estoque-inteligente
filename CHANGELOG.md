@@ -4,6 +4,40 @@ Registro das etapas de desenvolvimento do sistema, do que foi criado e do que
 foi alterado em cada uma. Cada versão corresponde a uma etapa mesclada em
 `dev` com tag no Git.
 
+## v0.4.0 — Telas web e interatividade
+
+**Criado**
+- Telas em Django Templates: Estoque (`/estoque/`), Movimentar (`/movimentar/`),
+  Histórico (`/historico/`) e login (`/contas/login/`).
+- `templates/base.html` com HTML5 semântico (`header`, `nav`, `main`), link
+  "pular para o conteúdo" e foco visível em todos os controles.
+- `static/js/busca-estoque.js`: filtro em tempo real pelo evento `input`, por
+  nome ou código, e filtro "somente abaixo do mínimo", sem recarregar a página.
+- `static/js/movimentacao.js`: subtotal, saldo previsto e aviso de saldo
+  insuficiente calculados na hora. O registro é feito com `fetch()` na API, e
+  saldo e mensagem são atualizados sem refresh.
+- `static/js/utils.js`: funções compartilhadas (token CSRF, moeda em R$,
+  mensagens de erro da API).
+- `static/js/fornecedor_cep.js`: no cadastro de fornecedor (Django admin), o
+  endereço é preenchido ao digitar o CEP.
+- Acessibilidade: `label for`, `aria-live="polite"` nas mensagens de estoque
+  baixo e de retorno, `aria-current` no menu e tabelas com `caption` e
+  `scope`.
+- Redirecionamento de `/` (nome `dashboard`) para o estoque. Será substituído
+  pelo painel na próxima versão.
+
+**Alterado**
+- `estoque/admin.py`: `FornecedorAdmin` carrega o script de CEP.
+- `WHITENOISE_USE_FINDERS` ativado em desenvolvimento, para servir `static/`
+  sem `collectstatic`.
+
+**Corrigido durante a verificação no navegador**
+- Valores monetários dos atributos `data-*` saíam com vírgula (`28,50`) por
+  causa da localização pt-BR, e o cálculo virava `NaN`. Agora são enviados sem
+  formatação.
+- Ao trocar o tipo de movimentação, o motivo podia ficar vazio. Agora sempre
+  seleciona a primeira opção válida.
+
 ## v0.3.0 — API REST e consulta de CEP
 
 **Criado**

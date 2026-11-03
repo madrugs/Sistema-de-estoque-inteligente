@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Movimentar estoque{% endblock %}
+
+{% block conteudo %}
+  <h1>Movimentar estoque</h1>
+  <p>Toda entrada ou saída fica registrada no histórico. O saldo é atualizado automaticamente.</p>
+
+  <form id="form-movimentacao" class="formulario" novalidate>
+    {% csrf_token %}
+
+    <div class="campo">
+      <label for="produto">Produto</label>
+      <select id="produto" name="produto" required>
+        <option value="">Selecione um produto</option>
+        {% for produto in produtos %}
+          <option value="{{ produto.pk }}"
+                  data-saldo="{{ produto.quantidade }}"
+                  data-minimo="{{ produto.estoque_minimo }}"
+                  data-custo="{{ produto.preco_custo|stringformat:'s' }}"
+                  data-venda="{{ produto.preco_venda|stringformat:'s' }}">
+            {{ produto.nome }} ({{ produto.codigo_barras }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="campo">
+      <label for="tipo">Tipo de movimentação</label>
+      <select id="tipo" name="tipo" required>
+        {% for valor, rotulo in tipos %}
+          <option value="{{ valor }}">{{ rotulo }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="campo">
+      <label for="motivo">Motivo</label>
+      <select id="motivo" name="motivo" required></select>
+    </div>
+
+    <div class="campo">
+      <label for="quantidade">Quantidade</label>
+      <input type="number" id="quantidade" name="quantidade" min="1" step="1" value="1" required aria-describedby="ajuda-quantidade">
+      <p id="ajuda-quantidade" class="ajuda">Use somente números inteiros positivos.</p>
+    </div>
+
+    <div class="campo">
+      <label for="fornecedor">Fornecedor (opcional)</label>
+      <select id="fornecedor" name="fornecedor">
+        <option value="">Nenhum</option>
+        {% for fornecedor in fornecedores %}
+          <option value="{{ fornecedor.pk }}">{{ fornecedor.razao_social }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="campo">
+      <label for="observacao">Observação (opcional)</label>
+      <input type="text" id="observacao" name="observacao" maxlength="255">
+    </div>
+
+    <section class="resumo" aria-labelledby="titulo-resumo">
+      <h2 id="titulo-resumo">Resumo</h2>
+      <dl>
+        <dt>Saldo atual</dt>
+        <dd id="saldo-atual">–</dd>
+        <dt>Saldo após a movimentação</dt>
+        <dd id="saldo-previsto">–</dd>
+        <dt>Valor unitário (custo na entrada, venda na saída)</dt>
+        <dd id="valor-unitario">–</dd>
+        <dt>Subtotal</dt>
+        <dd id="subtotal">–</dd>
+      </dl>
+    </section>
+
+    <p id="feedback" class="feedback" aria-live="polite"></p>
+
+    <button type="submit" id="botao-registrar">Registrar movimentação</button>
+  </form>
+
+  {{ motivos_por_tipo|json_script:"motivos-por-tipo" }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/movimentacao.js' %}"></script>
+{% endblock %}

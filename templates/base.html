@@ -1,0 +1,42 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Início{% endblock %} · Controle de estoque</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block cabecalho_extra %}{% endblock %}
+</head>
+<body>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="cabecalho">
+    <p class="marca">Mercadinho · Controle de estoque</p>
+
+    {% if request.user.is_authenticated %}
+      <nav aria-label="Principal">
+        <ul class="menu">
+          <li><a href="{% url 'dashboard' %}" {% if secao == 'painel' %}aria-current="page"{% endif %}>Painel</a></li>
+          <li><a href="{% url 'estoque-lista' %}" {% if secao == 'estoque' %}aria-current="page"{% endif %}>Estoque</a></li>
+          <li><a href="{% url 'movimentar' %}" {% if secao == 'movimentar' %}aria-current="page"{% endif %}>Movimentar</a></li>
+          <li><a href="{% url 'historico' %}" {% if secao == 'historico' %}aria-current="page"{% endif %}>Histórico</a></li>
+          {% if request.user.is_staff %}
+            <li><a href="{% url 'admin:index' %}">Cadastros</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+      <form method="post" action="{% url 'logout' %}" class="form-sair">
+        {% csrf_token %}
+        <button type="submit">Sair ({{ request.user.get_username }})</button>
+      </form>
+    {% endif %}
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <script src="{% static 'js/utils.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

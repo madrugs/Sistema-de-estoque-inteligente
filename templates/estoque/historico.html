@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block titulo %}Histórico{% endblock %}
+
+{% block conteudo %}
+  <h1>Histórico de movimentações</h1>
+  <p>As movimentações são registros de auditoria e não podem ser editadas nem apagadas.
+     Exibindo as {{ movimentacoes|length }} mais recentes.</p>
+
+  <div class="tabela-wrapper" tabindex="0" role="region" aria-labelledby="titulo-historico">
+    <table>
+      <caption id="titulo-historico">Movimentações registradas</caption>
+      <thead>
+        <tr>
+          <th scope="col">Data e hora</th>
+          <th scope="col">Produto</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Motivo</th>
+          <th scope="col" class="numero">Quantidade</th>
+          <th scope="col">Fornecedor</th>
+          <th scope="col">Observação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mov in movimentacoes %}
+          <tr>
+            <td>{{ mov.criado_em|date:"d/m/Y H:i" }}</td>
+            <th scope="row">{{ mov.produto.nome }}</th>
+            <td>{{ mov.get_tipo_display }}</td>
+            <td>{{ mov.get_motivo_display }}</td>
+            <td class="numero">{{ mov.quantidade }}</td>
+            <td>{{ mov.fornecedor.razao_social|default:"–" }}</td>
+            <td>{{ mov.observacao|default:"–" }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7">Nenhuma movimentação registrada ainda.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
