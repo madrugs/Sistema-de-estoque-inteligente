@@ -4,6 +4,22 @@ Registro das etapas de desenvolvimento do sistema, do que foi criado e do que
 foi alterado em cada uma. Cada versão corresponde a uma etapa mesclada em
 `dev` com tag no Git.
 
+## v0.5.0 — Painel com indicadores e gráficos
+
+**Criado**
+- Painel inicial (`/`) com agregações do ORM: `Sum` (capital imobilizado =
+  saldo x preço de custo, e unidades em estoque), `Count` (itens cadastrados
+  e produtos abaixo do mínimo) e `Avg` (preço médio de venda).
+- Gráficos com Chart.js (CDN cdnjs): volume em estoque por categoria (barras) e
+  movimentações por tipo (rosca).
+- Tabela das últimas 5 movimentações.
+- `static/js/painel.js`: se o Chart.js não carregar, a página mostra um aviso
+  em `aria-live` e os números continuam disponíveis.
+
+**Alterado**
+- `/` deixa de redirecionar para o estoque e passa a ser o painel.
+- 39 testes no total (painel: indicadores, dados dos gráficos e login).
+
 ## v0.4.0 — Telas web e interatividade
 
 **Criado**
