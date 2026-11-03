@@ -14,6 +14,10 @@ class FornecedorAdmin(admin.ModelAdmin):
     list_display = ["razao_social", "cnpj", "telefone", "email", "cidade", "uf"]
     search_fields = ["razao_social", "cnpj"]
 
+    class Media:
+        # Ao digitar o CEP, preenche o endereço consultando o ViaCEP.
+        js = ["js/utils.js", "js/fornecedor_cep.js"]
+
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):

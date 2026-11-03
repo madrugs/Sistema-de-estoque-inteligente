@@ -274,3 +274,35 @@ class CepApiTests(ApiTestCase):
         with mock.patch("estoque.cep.urlopen", side_effect=TimeoutError):
             resposta = self.client.get(reverse("api-cep", args=["01001000"]))
         self.assertEqual(resposta.status_code, 503)
+
+
+class PaginasWebTests(ApiTestCase):
+    def test_paginas_exigem_login(self):
+        self.client.logout()
+        for nome in ["estoque-lista", "movimentar", "historico"]:
+            with self.subTest(pagina=nome):
+                resposta = self.client.get(reverse(nome))
+                self.assertEqual(resposta.status_code, 302)
+                self.assertIn("/contas/login/", resposta["Location"])
+
+    def test_paginas_respondem_200_para_usuario_logado(self):
+        for nome in ["estoque-lista", "movimentar", "historico"]:
+            with self.subTest(pagina=nome):
+                self.assertEqual(self.client.get(reverse(nome)).status_code, 200)
+
+    def test_painel_redireciona_para_estoque(self):
+        resposta = self.client.get(reverse("dashboard"))
+        self.assertRedirects(resposta, reverse("estoque-lista"), fetch_redirect_response=False)
+
+    def test_estoque_mostra_alerta_com_aria_live(self):
+        self.produto.quantidade = 1
+        self.produto.save()
+        resposta = self.client.get(reverse("estoque-lista"))
+        self.assertContains(resposta, 'aria-live="polite"')
+        self.assertContains(resposta, "1 produto(s) abaixo do estoque mínimo.")
+
+    def test_movimentar_envia_motivos_por_tipo_para_o_script(self):
+        resposta = self.client.get(reverse("movimentar"))
+        self.assertContains(resposta, 'id="motivos-por-tipo"')
+        self.assertContains(resposta, "Refrigerante 2L")
+        self.assertContains(resposta, 'name="csrfmiddlewaretoken"')

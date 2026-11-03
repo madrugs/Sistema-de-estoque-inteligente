@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block titulo %}Estoque{% endblock %}
+
+{% block conteudo %}
+  <h1>Estoque</h1>
+
+  <p class="alerta-estoque{% if total_abaixo %} alerta-critico{% endif %}" aria-live="polite" id="alerta-estoque">
+    {% if total_abaixo %}
+      {{ total_abaixo }} produto(s) abaixo do estoque mínimo.
+    {% else %}
+      Nenhum produto abaixo do estoque mínimo.
+    {% endif %}
+  </p>
+
+  <section class="filtros" aria-labelledby="titulo-filtros">
+    <h2 id="titulo-filtros">Buscar produtos</h2>
+    <div class="campo">
+      <label for="busca">Nome ou código de barras</label>
+      <input type="search" id="busca" name="busca" autocomplete="off" aria-describedby="contagem">
+    </div>
+    <div class="campo campo-linha">
+      <input type="checkbox" id="somente-criticos">
+      <label for="somente-criticos">Mostrar somente produtos abaixo do mínimo</label>
+    </div>
+    <p id="contagem" aria-live="polite">{{ produtos|length }} produto(s) exibido(s).</p>
+  </section>
+
+  <div class="tabela-wrapper" tabindex="0" role="region" aria-labelledby="titulo-tabela">
+    <table id="tabela-estoque">
+      <caption id="titulo-tabela">Inventário atual</caption>
+      <thead>
+        <tr>
+          <th scope="col">Código de barras</th>
+          <th scope="col">Produto</th>
+          <th scope="col">Categoria</th>
+          <th scope="col" class="numero">Saldo</th>
+          <th scope="col" class="numero">Mínimo</th>
+          <th scope="col">Situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for produto in produtos %}
+          <tr data-nome="{{ produto.nome|lower }}" data-codigo="{{ produto.codigo_barras }}" data-critico="{{ produto.abaixo_do_minimo|yesno:'1,0' }}">
+            <td>{{ produto.codigo_barras }}</td>
+            <th scope="row">{{ produto.nome }}</th>
+            <td>{{ produto.categoria.nome }}</td>
+            <td class="numero">{{ produto.quantidade }}</td>
+            <td class="numero">{{ produto.estoque_minimo }}</td>
+            <td>
+              {% if produto.abaixo_do_minimo %}
+                <span class="selo selo-critico">Abaixo do mínimo</span>
+              {% else %}
+                <span class="selo selo-ok">Em dia</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6">Nenhum produto cadastrado. Cadastre produtos em Cadastros.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/busca-estoque.js' %}"></script>
+{% endblock %}
