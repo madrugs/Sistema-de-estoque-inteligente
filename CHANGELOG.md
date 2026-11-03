@@ -4,6 +4,27 @@ Registro das etapas de desenvolvimento do sistema, do que foi criado e do que
 foi alterado em cada uma. Cada versão corresponde a uma etapa mesclada em
 `dev` com tag no Git.
 
+## v0.3.0 — API REST e consulta de CEP
+
+**Criado**
+- Endpoints JSON em `/api/` (Django REST Framework), todos exigindo login:
+  - `produtos/` (listagem e detalhe) com filtros `q`, `categoria` e
+    `abaixo_minimo=1`.
+  - `movimentacoes/` (listagem e registro por POST). Não há PUT, PATCH nem
+    DELETE: o histórico não pode ser alterado pela API.
+  - `fornecedores/` (listagem e detalhe).
+  - `cep/<cep>/`: consulta ao ViaCEP pelo backend, com tratamento de CEP
+    inválido (400), não encontrado (404) e serviço fora do ar (503).
+- `estoque/serializers.py`: o saldo nunca é aceito do cliente. A movimentação
+  é sempre gravada pelo serviço, e a resposta devolve `saldo_apos`.
+- `estoque/cep.py`: normalização do CEP e chamada ao ViaCEP com timeout de 5 s.
+- Testes de integração de views/endpoints (status 200/201/400/404/503,
+  JSON esperado e bloqueio de saídas inválidas). Total: 32 testes.
+
+**Alterado**
+- `SaldoInsuficienteError` agora usa erro por campo (`quantidade`), para que a
+  API devolva o erro no campo certo.
+
 ## v0.2.0 — Modelos de dados e regras de estoque
 
 **Criado**

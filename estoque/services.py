@@ -22,7 +22,12 @@ def calcular_novo_saldo(saldo_atual, tipo, quantidade):
         return saldo_atual + quantidade
     if quantidade > saldo_atual:
         raise SaldoInsuficienteError(
-            f"Quantidade solicitada ({quantidade}) maior que o saldo em estoque ({saldo_atual})."
+            {
+                "quantidade": (
+                    f"Quantidade solicitada ({quantidade}) maior que o saldo "
+                    f"em estoque ({saldo_atual})."
+                )
+            }
         )
     return saldo_atual - quantidade
 
