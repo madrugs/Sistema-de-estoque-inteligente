@@ -34,8 +34,17 @@ if not SECRET_KEY:
         raise ImproperlyConfigured("Defina DJANGO_SECRET_KEY quando DJANGO_DEBUG estiver desativado.")
     SECRET_KEY = "chave-apenas-para-desenvolvimento-local-nao-use-em-producao"
 
-ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
-CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "sistema-de-estoque-inteligente-cpnk.onrender.com",
+    ".onrender.com",
+]
+ALLOWED_HOSTS += _env_list("DJANGO_ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = [
+    "https://sistema-de-estoque-inteligente-cpnk.onrender.com",
+]
+CSRF_TRUSTED_ORIGINS += _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 # Render informa o próprio domínio em RENDER_EXTERNAL_HOSTNAME.
 _host_render = os.getenv("RENDER_EXTERNAL_HOSTNAME")
