@@ -43,6 +43,7 @@ ALLOWED_HOSTS = [
 ALLOWED_HOSTS += _env_list("DJANGO_ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = [
     "https://sistema-de-estoque-inteligente-cpnk.onrender.com",
+    "https://*.onrender.com",
 ]
 CSRF_TRUSTED_ORIGINS += _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
