@@ -1,0 +1,26 @@
+# Deploy no Render: o Render lê este arquivo a partir do repositório.
+# Crie o serviço com "New > Blueprint" apontando para o repositório.
+databases:
+  - name: estoque-db
+    plan: free
+    databaseName: estoque
+    user: estoque
+
+services:
+  - type: web
+    name: estoque-web
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && gunicorn config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: estoque-db
+          property: connectionString

@@ -38,6 +38,23 @@ python manage.py runserver
 python manage.py test
 ```
 
+## Deploy no Render
+
+O arquivo `render.yaml` cria o serviço web e um banco PostgreSQL gerenciado.
+
+1. No Render, escolha **New > Blueprint** e aponte para o repositório.
+2. O Render gera `DJANGO_SECRET_KEY` automaticamente e define `DJANGO_DEBUG=0`.
+3. O build roda `collectstatic`, e o start roda `migrate` antes do `gunicorn`.
+4. O domínio `*.onrender.com` é lido de `RENDER_EXTERNAL_HOSTNAME`, então não precisa configurar `ALLOWED_HOSTS` manualmente.
+
+Para criar o superusuário em produção, use o shell do serviço no Render:
+
+```bash
+python manage.py createsuperuser
+```
+
+No plano gratuito, o banco PostgreSQL expira após 30 dias. Antes disso, migre para um plano pago ou exporte os dados.
+
 ## Fluxo de branches
 
 - `main`: versão estável entregue.
