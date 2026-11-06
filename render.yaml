@@ -11,7 +11,8 @@ services:
     name: estoque-web
     runtime: python
     plan: free
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    # O collectstatic não usa a chave secreta; o valor temporário só evita a exigência do settings no build.
+    buildCommand: pip install -r requirements.txt && DJANGO_SECRET_KEY=build-temporaria python manage.py collectstatic --noinput
     startCommand: python manage.py migrate --noinput && gunicorn config.wsgi:application
     envVars:
       - key: PYTHON_VERSION
