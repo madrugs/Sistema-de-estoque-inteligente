@@ -8,6 +8,7 @@ from pathlib import Path
 
 import dj_database_url
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,12 +26,22 @@ def _env_list(nome, padrao=""):
     return [item.strip() for item in os.getenv(nome, padrao).split(",") if item.strip()]
 
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "chave-apenas-para-desenvolvimento-local-nao-use-em-producao",
-)
 DEBUG = _env_bool("DJANGO_DEBUG", False)
+
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "")
+if not SECRET_KEY:
+    if not DEBUG:
+        raise ImproperlyConfigured("Defina DJANGO_SECRET_KEY quando DJANGO_DEBUG estiver desativado.")
+    SECRET_KEY = "chave-apenas-para-desenvolvimento-local-nao-use-em-producao"
+
 ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
+CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+
+# Render informa o próprio domínio em RENDER_EXTERNAL_HOSTNAME.
+_host_render = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if _host_render:
+    ALLOWED_HOSTS.append(_host_render)
+    CSRF_TRUSTED_ORIGINS.append(f"https://{_host_render}")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -115,3 +126,11 @@ REST_FRAMEWORK = {
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "login"
+
+# Em produção o site fica atrás de um proxy HTTPS (Render, Railway).
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = _env_bool("DJANGO_SECURE_SSL_REDIRECT", True)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.getenv("DJANGO_HSTS_SECONDS", "3600"))
